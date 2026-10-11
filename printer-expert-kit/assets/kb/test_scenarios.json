@@ -1,0 +1,22 @@
+[
+{"id":"T01","utterance":"my printer keeps jamming and the tray is stuffed full of paper","truth":["paper_jam","tray_overfilled"],"expected":"F01"},
+{"id":"T02","utterance":"it says paper jam but I cannot see anything inside","truth":["paper_jam","false_jam_message","scraps_inside"],"expected":"F02"},
+{"id":"T03","utterance":"my laser printer prints faded pages and says low toner","truth":["type_laser","faded_print","low_toner_msg"],"expected":"F05"},
+{"id":"T04","utterance":"my inkjet prints streaks across the page","truth":["type_inkjet","streaks"],"expected":"F06"},
+{"id":"T05","utterance":"I installed a new cartridge in my laser printer and now it prints blank pages","truth":["type_laser","blank_pages","new_cartridge","seal_tape_left"],"expected":"F10"},
+{"id":"T06","utterance":"the printer shows offline since we changed the router","truth":["printer_offline","wireless_connection","router_changed"],"expected":"F14"},
+{"id":"T07","utterance":"my document is stuck in the print queue","truth":["job_stuck"],"expected":"F15"},
+{"id":"T08","utterance":"I get a driver error since the windows update","truth":["driver_error","recent_update"],"expected":"F16"},
+{"id":"T09","utterance":"on my laser printer the toner rubs off when I touch the page","truth":["type_laser","toner_rubs_off"],"expected":"F09"},
+{"id":"T10","utterance":"the same black spot repeats down every page on my old laser printer","truth":["type_laser","repeating_marks","high_page_count"],"expected":"F08"},
+{"id":"T11","utterance":"the printer does not turn on and I already tried another socket","truth":["no_power","power_source_checked"],"expected":"F18"},
+{"id":"T12","utterance":"there is a burning smell coming from the printer","truth":["overheating"],"expected":"F20"},
+{"id":"T13","utterance":"my pages come out crooked and the guides are loose","truth":["paper_skew","paper_guides_loose"],"expected":"F25"},
+{"id":"T14","utterance":"the cartridge is not recognised and it is a refilled one","truth":["cartridge_not_recognized","third_party_cartridge"],"expected":"F17"},
+{"id":"T15","utterance":"the printer pulls several sheets at once and it is very old","truth":["multi_feed","high_page_count"],"expected":"F24"},
+{"id":"T16","utterance":"printing is very slow over wifi","truth":["slow_printing","wireless_connection"],"expected":"F26"},
+{"id":"T17","utterance":"my inkjet prints blank pages and I have not used it for months","truth":["type_inkjet","blank_pages","long_unused"],"expected":"F06"},
+{"id":"T18","utterance":"the printer is making a grinding noise and it is a very old machine","truth":["grinding_noise","high_page_count"],"expected":"F19"},
+{"id":"T19","utterance":"the colours are wrong on my inkjet printouts","truth":["type_inkjet","wrong_colours"],"expected":"F06"},
+{"id":"T20","utterance":"every page comes out completely black on my laser printer","truth":["type_laser","black_page"],"expected":"F27"}
+]
