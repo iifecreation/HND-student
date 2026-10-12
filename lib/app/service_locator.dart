@@ -1,5 +1,7 @@
-// Central service locator providing singleton access to core and voice services.
+// Central service locator providing singleton access to core, voice, and data services.
 
+import '../data/session_logger.dart';
+import '../data/settings_repository.dart';
 import '../knowledge/kb_loader.dart';
 import '../voice/speech_recognizer_service.dart';
 import '../voice/tts_service.dart';
@@ -14,6 +16,8 @@ class ServiceLocator {
   KnowledgeBase? kb;
   SpeechRecognizerService? _recognizer;
   TtsService? _tts;
+  SessionLogger? _sessionLogger;
+  SettingsRepository? _settingsRepository;
 
   /// Returns the active speech recognizer service (defaults to Vosk).
   SpeechRecognizerService get speechRecognizer =>
@@ -21,6 +25,13 @@ class ServiceLocator {
 
   /// Returns the text-to-speech service.
   TtsService get tts => _tts ??= TtsService();
+
+  /// Returns the local diagnostic session logger.
+  SessionLogger get sessionLogger => _sessionLogger ??= SessionLogger();
+
+  /// Returns the user settings and edge preferences repository.
+  SettingsRepository get settingsRepository =>
+      _settingsRepository ??= SettingsRepository();
 
   /// Switches active speech recognizer (e.g. between Vosk and on-device fallback).
   Future<void> setSpeechRecognizer(SpeechRecognizerService recognizer) async {
