@@ -335,7 +335,8 @@ void main() {
       final List<dynamic> scenarios =
           json.decode(scenariosFile.readAsStringSync()) as List<dynamic>;
 
-      expect(scenarios.length, equals(20), reason: '20 evaluation scenarios');
+      expect(scenarios.length, greaterThanOrEqualTo(20),
+          reason: 'At least 20 evaluation scenarios');
 
       const engine = InferenceEngine();
       final failures = <String>[];
@@ -376,7 +377,7 @@ void main() {
         print('Scenario Failures:\n${failures.join('\n\n')}');
       }
 
-      expect(failures, isEmpty, reason: 'All 20 test scenarios must match expected fault');
+      expect(failures, isEmpty, reason: 'All test scenarios must match expected fault');
     });
   });
 }
