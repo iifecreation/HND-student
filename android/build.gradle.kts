@@ -19,6 +19,27 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+subprojects {
+    plugins.withId("com.android.library") {
+        extensions.findByType(com.android.build.gradle.LibraryExtension::class.java)?.let { ext ->
+            if (ext.namespace == null) {
+                ext.namespace = if (project.name == "vosk_flutter") {
+                    "org.vosk.vosk_flutter"
+                } else {
+                    "com.flutter.${project.name.replace("-", "_")}"
+                }
+            }
+        }
+    }
+    if (project.name != "app") {
+        afterEvaluate {
+            extensions.findByType(com.android.build.gradle.LibraryExtension::class.java)?.let { ext ->
+                ext.compileSdk = 35
+            }
+        }
+    }
+}
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
