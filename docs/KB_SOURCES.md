@@ -1,5 +1,7 @@
 # Knowledge base sources
 
+Current size: 70 symptoms, 50 faults, 118 rules, 77 test scenarios, across five printer types (laser, inkjet, dot matrix, thermal receipt, label).
+
 This file records where the knowledge in `assets/kb/` came from. It is the evidence for the knowledge acquisition chapter of the dissertation.
 
 ## How the knowledge was acquired
@@ -34,6 +36,27 @@ The repair steps are written in our own words, not copied from the manuals.
 | F40 Drum counter not reset | Laser | Brother support FAQs on drum messages, e.g. https://www.brother.com.ph/en/support/hl-l5100dn/faqs?cate=187 | "Replace Drum" can remain after fitting a new drum until the drum counter is reset; the reset does not fix a worn drum. |
 | F08 (new rule R97) | Laser | Same Brother FAQs; HP repeating-defect tables: https://www.hp.com/cpso-support-new/pq/M855/defectspacing.html | "Drum End Soon" means the drum is near the end of its life. |
 
+## Sources for faults F41 to F50 (added October 2026, batch 2)
+
+| Fault | Printer type | Main source | What it supports |
+|---|---|---|---|
+| F41 Dirty corona wire | Laser (Brother) | Brother HL-B2080DW Online User's Guide, *Clean the Corona Wire*: https://support.brother.com/g/s/id/htmldoc/printer/cv_hlb2080dw/asoce/html/GUID-F406D846-93AB-4C32-ABE0-C31497BAAAE0_154.html | The [Drum !] message means clean the corona wire by sliding the green tab; return it to home or pages get a vertical stripe. |
+| F42 Paper size/type mismatch | Laser and inkjet | Brother HL-B2080DW, *Error and Maintenance Messages*: https://support.brother.com/g/s/id/htmldoc/printer/cv_hlb2080dw/asoce/html/GUID-D508418E-CC5B-42EE-8001-EFFA0AFD6A51_126.html | Size Mismatch, Size Error and Media Mismatch messages: load the right paper and set the matching tray size and type. |
+| F43 Fuser heating error | Laser | Same Brother messages table (*Self-Diagnostic*: fuser does not reach temperature); HP Community and repair-guide reports on HP 50.x fuser errors (search results) | Power off, wait, leave idle 15 minutes; fuser or power board if it persists; avoid UPS and power strips. **HP part is community-sourced.** |
+| F44 Print job cannot be processed | Laser | HP Community accepted answers on the 49 service error: https://h30434.www3.hp.com/t5/LaserJet-Printing/49-Service-Error/td-p/5645477 ; Brother messages table (*Out of Memory*, *Print Data Full*) | Remove all jobs from every computer, disconnect and restart, update firmware; reduce resolution for memory errors. **HP part is community-sourced.** |
+| F45 Waste toner full | Office laser / copier | Kyocera, Ricoh and Konica technician forum threads (copytechnet.com, edugeek.net, search results) | Waste toner box is counted and the machine stops until it is replaced; a stuck sensor can give false readings. **No official Kyocera page was reachable, so the technician should confirm.** |
+| F46 Label sensor not calibrated | Label (Zebra) | Zebra ZD620/ZD420 User Guide, *Resolve Print Issues*: https://docs.zebra.com/us/en/printers/desktop/bm-zd620-and-zd420-desktop-printers-user-guide-ditamap/c-zd620-420-troubleshooting/c-zd620-zd420-ug-resolve-print-issues.html ; Zebra ZD220/230 flash sequence: https://support.zebra.com/article/000027417 | Skipping labels: sensor not calibrated or not positioned; run SmartCal (hold Feed until two flashes); media out alerts from dirty or misaligned sensor. |
+| F47 Label media/ribbon loaded wrongly | Label (Zebra) | Same Zebra *Resolve Print Issues* page | No print on the label: printable side must face the head; thermal transfer media needs a ribbon. |
+| F48 Faint labels | Label (Zebra) | Same Zebra page | Darkness and speed settings, dirty print head, worn head. |
+| F49 Air in ink tubes after refill | Ink tank (Epson EcoTank etc.) | Epson ET-2720 FAQ: https://epson.com/faq/SPT_C11CH42201~faq-000080a-et2720 | After refilling expended tanks, run Power Cleaning, tanks at least one third full, wait 12 hours between Power Cleanings. |
+| F50 Cover not closed | Laser | Brother messages table (*Cover is Open*) | Close the front cover and the fuser cover firmly. |
+
+Also from batch 2:
+- R89 and R90 (thermal roll empty, roll cover open) now require a thermal printer. Before this fix, a laser user saying "out of paper" got receipt advice.
+- R118 (cartridge error on a laser means the cartridge is not seated) comes from Brother's *Cartridge Error* and *No Toner* rows.
+- Brand model-line names (PIXMA, EcoTank, LaserJet, i-SENSYS, ECOSYS, TaskAlfa, bizhub, TM-T20, Zebra, DYMO) were added as printer-type synonyms, so saying the model tells the system the printer type.
+- Single words that the fuzzy matcher would confuse with common words were removed on purpose: "xprinter" (≈ printer), "copier" (≈ copies), "label" and "labels".
+
 ## Sources still needed for F01 to F28
 
 The original 28 faults came from general troubleshooting practice. Before submission, add one manufacturer source to each row, for example:
@@ -61,5 +84,15 @@ Technician name: ____________________  Role / workshop: ____________________  Da
 | R95 | print head error message | F39 head failure | 0.80 | | |
 | R96 | drum message + new drum | F40 counter not reset | 0.85 | | |
 | R97 | drum message, no new drum | F08 worn drum | 0.70 | | |
+| R98 | Drum ! message | F41 dirty corona wire | 0.85 | | |
+| R100 | size or media mismatch message | F42 | 0.85 | | |
+| R101 | fuser error message | F43 fuser heating | 0.85 | | |
+| R102 | 49 service error / memory full | F44 bad print job | 0.80 | | |
+| R104 | waste toner box full | F45 | 0.90 | | |
+| R105 | labels skip | F46 sensor calibration | 0.85 | | |
+| R110 | blank labels | F47 media/ribbon wrong | 0.75 | | |
+| R111 | faint labels | F48 darkness / dirty head | 0.75 | | |
+| R113 | blank pages after refilling ink tank | F49 air in tubes | 0.85 | | |
+| R116 | cover open (not receipt printer) | F50 | 0.80 | | |
 
 Signature: ____________________

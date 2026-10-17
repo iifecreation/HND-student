@@ -346,9 +346,9 @@ void main() {
       );
 
       // Verify asset quantities as documented in SPEC
-      expect(kb.symptoms.length, equals(60), reason: '60 symptoms expected');
-      expect(kb.faults.length, equals(40), reason: '40 faults expected');
-      expect(kb.rules.length, equals(97), reason: '97 rules expected');
+      expect(kb.symptoms.length, equals(70), reason: '70 symptoms expected');
+      expect(kb.faults.length, equals(50), reason: '50 faults expected');
+      expect(kb.rules.length, equals(118), reason: '118 rules expected');
 
       // Validate the real knowledge base
       const validator = KbValidator();

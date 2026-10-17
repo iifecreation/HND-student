@@ -20,7 +20,7 @@
 
 ## 2. Scope
 
-**In scope:** English; desktop laser and inkjet printers, dot matrix (impact) printers and thermal receipt (POS) printers, mostly brand-agnostic; 40 faults; Android only; voice plus text fallback; local history log; evaluation harness.
+**In scope:** English; desktop laser and inkjet printers, dot matrix (impact) printers, thermal receipt (POS) printers and label/barcode printers, mostly brand-agnostic; 50 faults; Android only; voice plus text fallback; local history log; evaluation harness.
 
 **Out of scope (do not build):** cloud APIs of any kind, internet access, machine-learning model training, iOS, full brand-specific error-code libraries (a few very common codes such as Canon 5B00 and B200 are included as synonyms), user accounts, ads, analytics.
 
@@ -123,7 +123,7 @@ All knowledge is **data in JSON, not hard-coded in Dart.** Files are already pro
  "question":"Is paper stuck or jammed in the printer?",
  "excludes":["..."]}
 ```
-`category` is one of: printer_type, paper, quality, connectivity, hardware, context. Symptoms in `printer_type` (laser, inkjet, dot matrix, thermal) are what the question selector asks about early; a new printer type can be added in JSON alone. `excludes` lists mutually exclusive symptoms (asserting `type_laser` as true sets the other three types to false).
+`category` is one of: printer_type, paper, quality, connectivity, hardware, context. Symptoms in `printer_type` (laser, inkjet, dot matrix, thermal, label) are what the question selector asks about early; a new printer type can be added in JSON alone. `excludes` lists mutually exclusive symptoms (asserting `type_laser` as true sets the other printer types to false).
 
 **faults.json**
 ```json
@@ -226,7 +226,7 @@ Rules for this test: the 20 provided scenarios must stay unchanged. **Never edit
 
 ## 13. Knowledge acquisition and validation (for the report)
 
-The supplied knowledge base was compiled from general printer troubleshooting practice for laser and inkjet printers; faults F29 to F40 were added from manufacturer documentation listed in `docs/KB_SOURCES.md`. **It must be validated before submission:** (1) cross-check each fault against manufacturer support pages and manuals (HP, Canon, Epson, Brother) and cite them; (2) have a qualified printer technician review the rules and adjust CF values; (3) record the review in the report as the knowledge-validation step. The app must make adding or editing rules easy: change JSON, no Dart changes.
+The supplied knowledge base was compiled from general printer troubleshooting practice for laser and inkjet printers; faults F29 to F50 were added from manufacturer documentation listed in `docs/KB_SOURCES.md`. **It must be validated before submission:** (1) cross-check each fault against manufacturer support pages and manuals (HP, Canon, Epson, Brother) and cite them; (2) have a qualified printer technician review the rules and adjust CF values; (3) record the review in the report as the knowledge-validation step. The app must make adding or editing rules easy: change JSON, no Dart changes.
 
 ## 14. Risks and fallbacks
 
