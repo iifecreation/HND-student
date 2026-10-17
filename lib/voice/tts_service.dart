@@ -104,7 +104,20 @@ class TtsService {
 
     try {
       _isSpeaking = true;
-      await _flutterTts.speak(clean);
+      // Safety limit: if the Android TTS engine is lost mid-session (for
+      // example it is being updated), flutter_tts may never report
+      // completion and this await would hang the conversation forever.
+      // Allow roughly the time the sentence needs at a slow rate, then give
+      // up and re-initialise the engine on the next call.
+      final limit = Duration(seconds: 5 + clean.length ~/ 6);
+      await _flutterTts.speak(clean).timeout(limit, onTimeout: () async {
+        debugPrint('TtsService: speak timed out, will re-initialise TTS');
+        _isInitialized = false;
+        try {
+          await _flutterTts.stop();
+        } catch (_) {}
+        return null;
+      });
     } catch (e) {
       _isSpeaking = false;
       debugPrint('TtsService speak failed: $e');

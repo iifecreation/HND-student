@@ -83,5 +83,13 @@
 {"id":"T82","utterance":"my printer adds an extra blank page between pages","truth":["extra_blank_pages"],"expected":"F53"},
 {"id":"T83","utterance":"there is a blank page in between and it pulls several sheets at once","truth":["extra_blank_pages","multi_feed"],"expected":"F24"},
 {"id":"T84","utterance":"double sided printing is not working on my laser printer","truth":["type_laser","duplex_fail"],"expected":"F54"},
-{"id":"T85","utterance":"my hp officejet says printhead missing or failed","truth":["type_inkjet","printhead_error_msg"],"expected":"F39"}
+{"id":"T85","utterance":"my hp officejet says printhead missing or failed","truth":["type_inkjet","printhead_error_msg"],"expected":"F39"},
+{"id":"T86","utterance":"my laser printer prints a grey background on every page","truth":["type_laser","grey_background"],"expected":"F08"},
+{"id":"T87","utterance":"there are random specks all over the page from my laser printer","truth":["type_laser","toner_specks"],"expected":"F55"},
+{"id":"T88","utterance":"after printing label sheets my laser prints toner specks","truth":["type_laser","toner_specks","used_label_sheets"],"expected":"F55"},
+{"id":"T89","utterance":"there is toner on the back of the page","truth":["type_laser","toner_back_page"],"expected":"F56"},
+{"id":"T90","utterance":"when i print envelopes on my laser printer the toner rubs off","truth":["type_laser","toner_rubs_off","envelopes_used"],"expected":"F57"},
+{"id":"T91","utterance":"the envelopes come out wrinkled","truth":["type_laser","wrinkled_paper","envelopes_used"],"expected":"F57"},
+{"id":"T92","utterance":"the printer keeps asking for manual feed even though the tray is full","truth":["manual_feed_msg"],"expected":"F58"},
+{"id":"T93","utterance":"my laser printer print is faded because toner save is on","truth":["type_laser","faded_print","draft_mode"],"expected":"F22"}
 ]

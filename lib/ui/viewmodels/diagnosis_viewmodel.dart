@@ -195,9 +195,12 @@ class DiagnosisViewModel extends ChangeNotifier {
     _messages.add(ChatMessage(text: text, isUser: true));
     notifyListeners();
 
-    // Pause mic while inference & response happen
+    // Pause mic while inference & response happen. The time limit makes
+    // sure a slow or stuck speech engine can never block the reply.
     if (recognizer.isListening) {
-      await recognizer.stopListening();
+      await recognizer
+          .stopListening()
+          .timeout(const Duration(seconds: 2), onTimeout: () {});
     }
 
     final stopwatch = Stopwatch()..start();
@@ -206,7 +209,8 @@ class DiagnosisViewModel extends ChangeNotifier {
 
     _sessionInferenceMicros += stopwatch.elapsedMicroseconds;
     final inferenceMs = stopwatch.elapsedMilliseconds;
-    await settingsRepo.recordTimings(inferenceMs: inferenceMs);
+    // Saving the timing is not needed for the reply, so do not wait for it.
+    unawaited(settingsRepo.recordTimings(inferenceMs: inferenceMs));
 
     // Add system response to transcript
     _addSystemMessage(

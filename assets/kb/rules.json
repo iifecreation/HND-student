@@ -15,7 +15,7 @@
 {"id":"R14","all":["multi_feed","damp_paper"],"then":"F04","cf":0.50,"why":"Damp paper sticks together."},
 {"id":"R15","all":["paper_skew","paper_guides_loose"],"then":"F25","cf":0.85,"why":"Loose guides let the paper enter at an angle."},
 {"id":"R16","all":["paper_skew"],"then":"F25","cf":0.50,"why":"Crooked output most often comes from the paper guides."},
-{"id":"R17","all":["wrinkled_paper","type_laser"],"then":"F09","cf":0.55,"why":"On a laser printer wrinkles can come from a failing fuser."},
+{"id":"R17","all":["wrinkled_paper","type_laser"],"none":["envelopes_used"],"then":"F09","cf":0.55,"why":"On a laser printer wrinkles can come from a failing fuser."},
 
 {"id":"R18","all":["faded_print","type_laser","low_toner_msg"],"then":"F05","cf":0.85,"why":"Faded laser print with a low toner message means the toner is running out."},
 {"id":"R19","all":["faded_print","type_laser"],"then":"F05","cf":0.50,"why":"Faded laser print is most often low toner."},
@@ -29,7 +29,7 @@
 {"id":"R27","all":["repeating_marks","type_laser","high_page_count"],"then":"F08","cf":0.90,"why":"A worn drum is likely on an old printer."},
 {"id":"R28","all":["ghosting","type_laser"],"then":"F08","cf":0.60,"why":"Ghost images can come from a worn drum."},
 {"id":"R29","all":["ghosting","type_laser"],"then":"F09","cf":0.45,"why":"Ghost images can also come from a failing fuser."},
-{"id":"R30","all":["toner_rubs_off","type_laser"],"then":"F09","cf":0.90,"why":"Toner that rubs off was not fused to the paper, so the fuser is failing."},
+{"id":"R30","all":["toner_rubs_off","type_laser"],"none":["envelopes_used"],"then":"F09","cf":0.90,"why":"Toner that rubs off was not fused to the paper, so the fuser is failing."},
 {"id":"R31","all":["smudged","type_inkjet"],"then":"F22","cf":0.55,"why":"Smudged inkjet print is often a wrong paper type or quality setting."},
 {"id":"R32","all":["smudged","type_inkjet","damp_paper"],"then":"F04","cf":0.60,"why":"Ink smears on damp paper."},
 {"id":"R33","all":["smudged","type_laser"],"then":"F09","cf":0.60,"why":"Smudged toner suggests poor fusing."},
@@ -125,5 +125,15 @@
 {"id":"R121","all":["service_call_msg"],"then":"F52","cf":0.90,"why":"A service call code means the machine found a fault that needs a technician."},
 {"id":"R122","all":["extra_blank_pages"],"then":"F53","cf":0.70,"why":"Extra blank pages usually come from the document or the paper size setting."},
 {"id":"R123","all":["extra_blank_pages","multi_feed"],"then":"F24","cf":0.75,"why":"Blank pages with several sheets feeding at once point to a worn separation pad."},
-{"id":"R124","all":["duplex_fail"],"then":"F54","cf":0.80,"why":"Two-sided printing stops when the back cover or duplex tray is not closed or the size is unsupported."}
+{"id":"R124","all":["duplex_fail"],"then":"F54","cf":0.80,"why":"Two-sided printing stops when the back cover or duplex tray is not closed or the size is unsupported."},
+{"id":"R125","all":["grey_background","type_laser"],"then":"F08","cf":0.70,"why":"Brother's guide says grey background shading comes from the drum unit or a hot, humid room."},
+{"id":"R126","all":["grey_background","type_laser","high_page_count"],"then":"F08","cf":0.85,"why":"Grey background on a heavily used printer points to a worn drum."},
+{"id":"R127","all":["toner_specks","type_laser"],"then":"F55","cf":0.60,"why":"Random toner specks usually come from material stuck on the drum."},
+{"id":"R128","all":["toner_specks","used_label_sheets"],"then":"F55","cf":0.85,"why":"Label glue or staples leave material on the drum that prints as specks."},
+{"id":"R129","all":["repeating_marks","used_label_sheets"],"then":"F55","cf":0.85,"why":"Marks repeating at the drum spacing after printing labels mean glue is stuck on the drum."},
+{"id":"R130","all":["toner_back_page"],"then":"F56","cf":0.75,"why":"Toner on the back of pages comes from a dirty transfer roller or fuser."},
+{"id":"R131","all":["toner_rubs_off","envelopes_used"],"then":"F57","cf":0.85,"why":"Toner rubbing off envelopes or card usually means the media type or levers are wrong."},
+{"id":"R132","all":["wrinkled_paper","envelopes_used"],"then":"F57","cf":0.80,"why":"Creased envelopes mean the envelope levers or feed path are not set for envelopes."},
+{"id":"R133","all":["paper_jam","envelopes_used"],"then":"F57","cf":0.65,"why":"Envelopes and thick paper jam when fed from the main tray instead of the manual slot."},
+{"id":"R134","all":["manual_feed_msg"],"then":"F58","cf":0.85,"why":"A manual feed request means the print job chose the manual slot as its paper source."}
 ]

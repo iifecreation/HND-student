@@ -1,6 +1,6 @@
 # Knowledge base sources
 
-Current size: 74 symptoms, 54 faults, 124 rules, 85 test scenarios, across five printer types (laser, inkjet, dot matrix, thermal receipt, label).
+Current size: 80 symptoms, 58 faults, 134 rules, 93 test scenarios, across five printer types (laser, inkjet, dot matrix, thermal receipt, label).
 
 This file records where the knowledge in `assets/kb/` came from. It is the evidence for the knowledge acquisition chapter of the dissertation.
 
@@ -69,6 +69,28 @@ Also from batch 2:
 
 **Design note found while testing (useful for the viva):** the extractor treats *not / cannot / can't* just before a phrase as negation. For symptoms that describe a failure ("cannot print from my phone"), the negative word must be inside the synonym, or the symptom is recorded as absent. Scenarios T78 and T84 caught this.
 
+## Sources for faults F55 to F58 (batch 4)
+
+Main source: Brother HL-B2080DW Online User's Guide, *Improve the Print Quality*: https://support.brother.com/g/s/id/htmldoc/printer/cv_hlb2080dw/asoce/html/GUID-EEC1EE16-C8ED-4BC3-B3C4-27B0AACF0D44_133.html
+
+| Fault / rule | What the source says |
+|---|---|
+| R125–R126 grey background → F08 worn drum | *Grey background*: hot or humid room, clean the drum, replace the drum. |
+| F55 Drum surface contaminated | *Toner specks* and *spots at 94 mm intervals*: glue from label sheets or foreign material on the drum; clean with Drum Dot Print; staples or clips can damage the drum. |
+| F56 Toner on transfer roller or fuser | *Toner specks* / *toner stains*: fuser may be contaminated, contact service. HP Community answers also name the transfer roller (https://h30434.www3.hp.com/t5/LaserJet-Printing/Grey-Shading-on-8000N/td-p/7452548). |
+| F57 Wrong setting for envelopes or thick paper | *Poor fixing* and *Envelope creases*: green levers inside the back cover, media type setting, envelopes from the manual feed slot with the back cover open. R17 and R30 (fuser) now exclude this case. |
+| F58 Print job set to manual feed | Brother *Error and Maintenance Messages*, *Manual Feed*: manual selected as the paper source in the driver. |
+| draft_mode synonyms | *Faint*: Toner Save may be on. |
+
+## Live app test on an Android emulator (17 October 2026)
+
+The debug app was installed on a Pixel 4 emulator (Android 16, 2 GB RAM) and driven by typed input:
+1. The app started, asked for microphone permission, loaded the Vosk model with no error banner, and greeted the user.
+2. Typing "myy" (rubbish) got "I did not catch a specific printer symptom…".
+3. "my receipt printer prints blank receipts" → the scratch-test question → answering No → more questions → **Diagnosis: Thermal paper roll loaded the wrong way (F33), 60%**. The Diagnosis & Fix Guide showed severity, the certainty bar and the five spoken steps.
+
+**Bug found and fixed during this test:** the Android TTS engine was updated in the background mid-session. flutter_tts then never reported speech completion, and the next reply hung. `TtsService.speak()` now has a time limit and re-initialises the engine, and the reply no longer waits on stopping the microphone or saving timings.
+
 ## Sources still needed for F01 to F28
 
 The original 28 faults came from general troubleshooting practice. Before submission, add one manufacturer source to each row, for example:
@@ -110,5 +132,10 @@ Technician name: ____________________  Role / workshop: ____________________  Da
 | R121 | service call / SC code | F52 technician | 0.90 | | |
 | R122 | extra blank pages | F53 | 0.70 | | |
 | R124 | two-sided printing not working | F54 | 0.80 | | |
+| R125 | grey background (laser) | F08 worn drum | 0.70 | | |
+| R128 | specks after label sheets | F55 drum contaminated | 0.85 | | |
+| R130 | toner on back of page | F56 transfer roller / fuser | 0.75 | | |
+| R131 | toner rubs off envelopes / card | F57 settings | 0.85 | | |
+| R134 | manual feed message | F58 | 0.85 | | |
 
 Signature: ____________________
