@@ -38,5 +38,22 @@
 {"id":"T37","utterance":"there is a paper jam in the printer","truth":["paper_jam","paper_guides_loose"],"expected":"F01"},
 {"id":"T38","utterance":"the papr is jamed and the trey is full","truth":["paper_jam","tray_overfilled"],"expected":"F01"},
 {"id":"T39","utterance":"my ink jet prints streeks across the pag","truth":["type_inkjet","streaks"],"expected":"F06"},
-{"id":"T40","utterance":"laserjet shows low tonr message and prints light","truth":["type_laser","faded_print","low_toner_msg"],"expected":"F05"}
+{"id":"T40","utterance":"laserjet shows low tonr message and prints light","truth":["type_laser","faded_print","low_toner_msg"],"expected":"F05"},
+{"id":"T41","utterance":"my dot matrix printer prints very faint","truth":["type_dotmatrix","faded_print"],"expected":"F29"},
+{"id":"T42","utterance":"the dot matrix print is faint and the ribbon is very old","truth":["type_dotmatrix","faded_print","ribbon_old"],"expected":"F29"},
+{"id":"T43","utterance":"there are lines of dots missing from the letters on my dot matrix","truth":["type_dotmatrix","missing_dot_lines"],"expected":"F30"},
+{"id":"T44","utterance":"dots missing in the text and the ribbon is loose","truth":["type_dotmatrix","missing_dot_lines","ribbon_loose"],"expected":"F31"},
+{"id":"T45","utterance":"the continuous paper keeps coming off the tractor","truth":["type_dotmatrix","tractor_feed_problem"],"expected":"F32"},
+{"id":"T46","utterance":"my receipt printer prints blank receipts","truth":["type_thermal","blank_pages"],"expected":"F33"},
+{"id":"T47","utterance":"the receipt printer comes out blank and it is ordinary paper","truth":["type_thermal","blank_pages","non_thermal_paper"],"expected":"F34"},
+{"id":"T48","utterance":"receipts from my thermal printer are very faded","truth":["type_thermal","faded_print"],"expected":"F35"},
+{"id":"T49","utterance":"the pos printer has a red light and the paper roll is finished","truth":["type_thermal","error_light","out_of_paper"],"expected":"F36"},
+{"id":"T50","utterance":"the receipt printer says cover open","truth":["type_thermal","cover_open"],"expected":"F36"},
+{"id":"T51","utterance":"my receipt printer is not cutting the paper","truth":["type_thermal","cutter_error"],"expected":"F37"},
+{"id":"T52","utterance":"my canon shows error five b zero zero ink absorber full","truth":["type_inkjet","waste_ink_msg"],"expected":"F38"},
+{"id":"T53","utterance":"epson says parts inside have reached the end of their service life","truth":["type_inkjet","waste_ink_msg"],"expected":"F38"},
+{"id":"T54","utterance":"the printer shows a print head error b two hundred","truth":["type_inkjet","printhead_error_msg"],"expected":"F39"},
+{"id":"T55","utterance":"my laser printer says drum end soon even though i fitted a new drum","truth":["type_laser","drum_msg","new_drum"],"expected":"F40"},
+{"id":"T56","utterance":"my laser printer keeps showing drum end soon","truth":["type_laser","drum_msg"],"expected":"F08"},
+{"id":"T57","utterance":"my dot matrics printer is printing very feint","truth":["type_dotmatrix","faded_print"],"expected":"F29"}
 ]

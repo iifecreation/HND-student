@@ -44,7 +44,9 @@ void main() {
         candidates: candidates,
       );
 
-      expect(nextQuestion?.id, equals('type_laser'),
+      // Any printer-type question is correct here; with four printer types
+      // the selector asks about the type most candidate rules depend on.
+      expect(nextQuestion?.category, equals(QuestionSelector.printerTypeCategory),
           reason: 'Printer type must be asked early when candidates differ by printer type');
     });
 

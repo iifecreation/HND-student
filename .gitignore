@@ -48,3 +48,6 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Vosk speech model: large binary, each developer downloads it (see 00_START_HERE.md)
+assets/models/*.zip

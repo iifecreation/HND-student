@@ -10,7 +10,7 @@ Modern diagnostics frequently depend on remote cloud APIs or opaque machine lear
 1. **100% Offline at Runtime:** Runs entirely on-device with zero network connectivity. The release APK declares no `INTERNET` permission, ensuring total privacy, zero operational cloud cost, and guaranteed field operation in network-isolated environments.
 2. **Pure-Dart Decoupled Core:** All core logic (`lib/knowledge`, `lib/engine`, `lib/nlu`, `lib/dialogue`) is pure Dart without Flutter dependencies, enabling fast headless execution and 100% automated test coverage.
 3. **Transparent & Explainable Reasoning:** No black-box machine learning. Diagnosis is driven by a forward-chaining inference engine with Shortliffe & Buchanan (MYCIN) Certainty Factors ($CF \in [0.0, 1.0]$), an interactive dialogue manager, and a full explanation facility ("Why this?" rule provenance).
-4. **Knowledge Decoupled into JSON:** The expert system rules (72 IF-THEN rules), faults (28 faults across 5 categories), and symptoms (46 symptoms with synonyms) reside entirely in `assets/kb/*.json`. Knowledge can be updated or expanded without touching application code.
+4. **Knowledge Decoupled into JSON:** The expert system rules (97 IF-THEN rules), faults (40 faults across 5 categories, covering laser, inkjet, dot matrix and thermal receipt printers), and symptoms (60 symptoms with synonyms) reside entirely in `assets/kb/*.json`. Knowledge can be updated or expanded without touching application code.
 
 ---
 
@@ -179,4 +179,4 @@ Examiners frequently ask targeted questions about architecture, algorithms, and 
 - [ ] Confirm offline Google Speech Recognition voice pack is downloaded in phone **Settings -> System -> Languages & input -> Text-to-speech output**.
 - [ ] Run `flutter analyze` and `flutter test` (must report 0 issues and 100% pass).
 - [ ] Perform the manual evaluations detailed in `docs/EVALUATION.md` (speech accuracy per accent, latency profiling, 10-user SUS usability testing).
-- [ ] Have a certified printer technician review the 72 rules and record the feedback in the dissertation.
+- [ ] Have a certified printer technician review the 97 rules and record the feedback in the dissertation.
