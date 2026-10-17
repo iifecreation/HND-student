@@ -1,5 +1,6 @@
 // Data model and diagnostic helper for edge self-check and offline status.
 
+import 'package:flutter/services.dart';
 import 'permissions.dart';
 import 'speech_recognizer_service.dart';
 import 'tts_service.dart';
@@ -59,8 +60,11 @@ class EdgeStatus {
     final offlineVoice = tts.isOfflineVoiceInstalled;
     final modelReady = recognizer.isInitialized;
 
-    // Hard rule NFR1: release manifest does not declare android.permission.INTERNET.
-    const internetPresent = false;
+    // Hard rule NFR1: the release APK must not declare INTERNET.
+    // We ask Android which permissions the installed APK declares rather
+    // than assuming. Debug builds legitimately include INTERNET (Flutter needs
+    // it for hot reload), so this only shows "absent" on a release build.
+    final internetPresent = await _declaresInternet();
 
     String? message;
     if (!micGranted) {
@@ -83,5 +87,21 @@ class EdgeStatus {
       activeSttEngine: recognizer.engineName,
       statusMessage: message,
     );
+  }
+
+  /// Channel implemented in android/.../MainActivity.kt.
+  static const MethodChannel _edgeChannel = MethodChannel('printer_doc/edge');
+
+  /// Returns true if the installed APK declares android.permission.INTERNET.
+  /// If the check cannot run (for example in unit tests with no Android
+  /// side), it returns true so we never wrongly claim the app is offline.
+  static Future<bool> _declaresInternet() async {
+    try {
+      final perms =
+          await _edgeChannel.invokeListMethod<String>('declaredPermissions');
+      return perms == null || perms.contains('android.permission.INTERNET');
+    } catch (_) {
+      return true;
+    }
   }
 }

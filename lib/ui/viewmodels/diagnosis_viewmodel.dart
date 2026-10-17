@@ -11,6 +11,7 @@ import '../../dialogue/dialogue_state.dart';
 import '../../engine/inference_engine.dart';
 import '../../knowledge/fault.dart';
 import '../../knowledge/kb_loader.dart';
+import '../../voice/permissions.dart';
 import '../../voice/speech_recognizer_service.dart';
 import '../../voice/tts_service.dart';
 
@@ -33,6 +34,17 @@ class ChatMessage {
   }) : timestamp = timestamp ?? DateTime.now();
 }
 
+/// Kinds of voice problem the Home screen can show a banner for.
+enum VoiceIssueKind { micPermission, modelMissing, ttsVoiceMissing, listenFailed }
+
+/// A user-facing voice problem plus plain instructions on how to fix it.
+/// The app still works through typing and the chips while one is showing.
+class VoiceIssue {
+  final VoiceIssueKind kind;
+  final String message;
+  const VoiceIssue(this.kind, this.message);
+}
+
 /// Primary ViewModel connecting UI to the expert system core and voice pipelines.
 class DiagnosisViewModel extends ChangeNotifier {
   final ServiceLocator _services = ServiceLocator();
@@ -45,6 +57,11 @@ class DiagnosisViewModel extends ChangeNotifier {
   String _livePartialText = '';
   DateTime? _speechStartTime;
   DateTime? _sessionStartTime;
+  VoiceIssue? _voiceIssue;
+
+  // Real time spent inside the dialogue manager for this session, summed
+  // over every turn. Logged so evaluation figures are measured, not invented.
+  int _sessionInferenceMicros = 0;
 
   StreamSubscription<String>? _partialSub;
   StreamSubscription<String>? _finalSub;
@@ -53,6 +70,7 @@ class DiagnosisViewModel extends ChangeNotifier {
   bool get isInitialized => _isInitialized;
   bool get isLoading => _isLoading;
   String get livePartialText => _livePartialText;
+  VoiceIssue? get voiceIssue => _voiceIssue;
 
   DialogueState get state => _dialogueManager?.state ?? DialogueState.idle;
   String? get currentQuestion =>
@@ -103,7 +121,12 @@ class DiagnosisViewModel extends ChangeNotifier {
 
       tts.onSpeechCompleted = () async {
         final currentSettings = await settingsRepo.getSettings();
+        // Do not auto-listen while a mic/model problem is showing, or we
+        // would keep re-prompting the user for permission.
+        final voiceBlocked = _voiceIssue != null &&
+            _voiceIssue!.kind != VoiceIssueKind.ttsVoiceMissing;
         if (currentSettings.autoListenEnabled &&
+            !voiceBlocked &&
             (state == DialogueState.collecting ||
                 state == DialogueState.questioning ||
                 state == DialogueState.guiding)) {
@@ -112,9 +135,11 @@ class DiagnosisViewModel extends ChangeNotifier {
         notifyListeners();
       };
 
-      // 4. Initialize active speech recognizer
+      // 4. Initialize active speech recognizer. Failure here is not fatal:
+      // typing and the quick-reply chips still work without voice.
       await recognizer.initialize();
       _setupRecognizerSubscriptions();
+      await _checkVoiceReadiness();
 
       // 5. Start dialogue session with friendly welcome greeting
       startNewSession();
@@ -152,6 +177,7 @@ class DiagnosisViewModel extends ChangeNotifier {
   void startNewSession() {
     _messages.clear();
     _sessionStartTime = DateTime.now();
+    _sessionInferenceMicros = 0;
 
     final response = _dialogueManager!.startSession();
     _addSystemMessage(response.spokenText,
@@ -178,6 +204,7 @@ class DiagnosisViewModel extends ChangeNotifier {
     final response = _dialogueManager!.processUtterance(text);
     stopwatch.stop();
 
+    _sessionInferenceMicros += stopwatch.elapsedMicroseconds;
     final inferenceMs = stopwatch.elapsedMilliseconds;
     await settingsRepo.recordTimings(inferenceMs: inferenceMs);
 
@@ -235,16 +262,82 @@ class DiagnosisViewModel extends ChangeNotifier {
   }
 
   Future<void> startListening() async {
-    if (!recognizer.isInitialized) {
-      await recognizer.initialize();
+    // Ask for the microphone the first time the user actually needs it.
+    if (!await VoicePermissions.hasMicrophonePermission() &&
+        !await VoicePermissions.requestMicrophonePermission()) {
+      _setVoiceIssue(_micIssue);
+      return;
+    }
+    if (!recognizer.isInitialized && !await recognizer.initialize()) {
+      _setVoiceIssue(_modelIssue);
+      return;
     }
     if (tts.isSpeaking) {
       await tts.stop();
     }
     _speechStartTime = DateTime.now();
     _livePartialText = '';
-    await recognizer.startListening();
+    try {
+      await recognizer.startListening();
+      // Listening worked, so clear any old mic/model banner.
+      if (_voiceIssue?.kind != VoiceIssueKind.ttsVoiceMissing) {
+        _voiceIssue = null;
+      }
+    } catch (e) {
+      _setVoiceIssue(VoiceIssue(VoiceIssueKind.listenFailed,
+          'Could not start listening ($e). You can type your problem instead.'));
+    }
     notifyListeners();
+  }
+
+  static const _micIssue = VoiceIssue(
+      VoiceIssueKind.micPermission,
+      'Microphone permission is off. Tap "Fix" and allow the microphone, '
+      'or type your problem below.');
+  static const _modelIssue = VoiceIssue(
+      VoiceIssueKind.modelMissing,
+      'Speech model not found. Put vosk-model-small-en-us-0.15.zip in '
+      'assets/models/ and rebuild, or switch engine in Settings.');
+  static const _ttsIssue = VoiceIssue(
+      VoiceIssueKind.ttsVoiceMissing,
+      'Offline voice data is missing, so answers may not be spoken. Open '
+      'Android Settings > Text-to-speech output and download English.');
+
+  /// Checks voice readiness once at startup and picks the most important
+  /// problem to show. The mic is only checked, not requested, here.
+  Future<void> _checkVoiceReadiness() async {
+    if (!recognizer.isInitialized) {
+      _voiceIssue = _modelIssue;
+    } else if (!await VoicePermissions.hasMicrophonePermission()) {
+      _voiceIssue = _micIssue;
+    } else if (!tts.isReady || !tts.isOfflineVoiceInstalled) {
+      _voiceIssue = _ttsIssue;
+    } else {
+      _voiceIssue = null;
+    }
+  }
+
+  void _setVoiceIssue(VoiceIssue issue) {
+    _voiceIssue = issue;
+    notifyListeners();
+  }
+
+  /// Hides the current voice banner until the next problem occurs.
+  void dismissVoiceIssue() {
+    _voiceIssue = null;
+    notifyListeners();
+  }
+
+  /// Action for the banner's "Fix" button.
+  Future<void> fixVoiceIssue() async {
+    if (_voiceIssue?.kind == VoiceIssueKind.micPermission) {
+      if (await VoicePermissions.isPermanentlyDenied()) {
+        await VoicePermissions.openAppSettingsPage();
+      } else if (await VoicePermissions.requestMicrophonePermission()) {
+        await _checkVoiceReadiness();
+        notifyListeners();
+      }
+    }
   }
 
   Future<void> stopListening() async {
@@ -269,6 +362,7 @@ class DiagnosisViewModel extends ChangeNotifier {
     await _services.setSpeechRecognizer(newRecognizer);
     await newRecognizer.initialize();
     _setupRecognizerSubscriptions();
+    await _checkVoiceReadiness();
     notifyListeners();
   }
 
@@ -309,7 +403,7 @@ class DiagnosisViewModel extends ChangeNotifier {
       diagnosedFaultName: currentFault?.name,
       confidence: currentCandidate?.cf,
       outcome: outcome,
-      inferenceMs: 5,
+      inferenceMs: (_sessionInferenceMicros / 1000).round(),
       totalDurationMs: DateTime.now()
           .difference(_sessionStartTime ?? DateTime.now())
           .inMilliseconds,

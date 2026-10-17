@@ -127,6 +127,10 @@ class _HomeScreenState extends State<HomeScreen> {
           : SafeArea(
               child: Column(
                 children: [
+                  // Voice problem banner (mic, model or TTS voice data)
+                  if (vm.voiceIssue != null)
+                    _buildVoiceIssueBanner(vm.voiceIssue!, vm),
+
                   // Diagnosis Banner (when diagnosed)
                   if (vm.state == DialogueState.diagnosed &&
                       vm.currentCandidate != null &&
@@ -170,6 +174,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+    );
+  }
+
+  /// Friendly error banner telling the user what is wrong with voice and how
+  /// to fix it. Text input keeps working underneath.
+  Widget _buildVoiceIssueBanner(VoiceIssue issue, DiagnosisViewModel vm) {
+    return MaterialBanner(
+      leading: const Icon(Icons.mic_off),
+      content: Text(issue.message),
+      actions: [
+        if (issue.kind == VoiceIssueKind.micPermission)
+          TextButton(onPressed: vm.fixVoiceIssue, child: const Text('Fix')),
+        if (issue.kind == VoiceIssueKind.modelMissing)
+          TextButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            ),
+            child: const Text('Settings'),
+          ),
+        TextButton(
+          onPressed: vm.dismissVoiceIssue,
+          child: const Text('Dismiss'),
+        ),
+      ],
     );
   }
 

@@ -1,5 +1,6 @@
 // Settings and edge diagnostics screen for configuring speech pacing, engines, and offline status.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../app/service_locator.dart';
@@ -220,7 +221,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             _statusRow(
               'INTERNET Permission',
-              status.internetPermissionPresent ? 'Present (Violation)' : 'Absent (100% Offline)',
+              status.internetPermissionPresent
+                  ? (kDebugMode
+                      ? 'Present (normal in debug builds)'
+                      : 'Present (Violation)')
+                  : 'Absent (100% Offline)',
               isOk: !status.internetPermissionPresent,
             ),
             const Divider(),
