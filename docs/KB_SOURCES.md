@@ -1,6 +1,6 @@
 # Knowledge base sources
 
-Current size: 70 symptoms, 50 faults, 118 rules, 77 test scenarios, across five printer types (laser, inkjet, dot matrix, thermal receipt, label).
+Current size: 74 symptoms, 54 faults, 124 rules, 85 test scenarios, across five printer types (laser, inkjet, dot matrix, thermal receipt, label).
 
 This file records where the knowledge in `assets/kb/` came from. It is the evidence for the knowledge acquisition chapter of the dissertation.
 
@@ -57,6 +57,18 @@ Also from batch 2:
 - Brand model-line names (PIXMA, EcoTank, LaserJet, i-SENSYS, ECOSYS, TaskAlfa, bizhub, TM-T20, Zebra, DYMO) were added as printer-type synonyms, so saying the model tells the system the printer type.
 - Single words that the fuzzy matcher would confuse with common words were removed on purpose: "xprinter" (≈ printer), "copier" (≈ copies), "label" and "labels".
 
+## Sources for faults F51 to F54 (batch 3)
+
+| Fault | Printer type | Main source | What it supports |
+|---|---|---|---|
+| F51 Phone cannot print | Any network printer | OKI online manual, *Troubleshooting for Mopria Print Service*: https://www.oki.com/printing/online-manuals-Z002/EE8001-4624/id/contents/contents/120775527.html | Wait 2–3 minutes after power-on, same network as the phone, Default/Mopria Print Service enabled on Android, firmware up to date, Mopria enabled on the printer. |
+| F52 Service call code | Office copier / laser (Ricoh etc.) | Ricoh service-code summaries and technician forum threads (search results; no official Ricoh page reachable) | SC codes are hardware, temperature or control faults; power-cycle at most once; heat/fuser codes need an authorised technician. **Community-sourced, so ask the technician to confirm.** |
+| F53 Extra blank pages | Any | HP Tech Takes, *Printer printing blank pages fix*: https://www.hp.com/us-en/shop/tech-takes/printer-printing-blank-pages-fix ; existing separation-pad rules (F24) | Blank pages from settings, drivers or feeding; extra pages from document page breaks and paper-size mismatch are common trade knowledge. |
+| F54 Two-sided printing blocked | Laser and inkjet | Brother HL-B2080DW *Error and Maintenance Messages* (*2-sided Disabled*, *Size Error DX*), link above | Back cover not closed, 2-sided tray not installed, paper size not supported for duplex. |
+| F39 (new synonyms) | Inkjet (HP) | HP Community threads on "Missing or Failed Printhead" (OfficeJet Pro 8610/8620) | Same fault as Canon B200: reseat the head, clean the contacts, replace the head if it persists. |
+
+**Design note found while testing (useful for the viva):** the extractor treats *not / cannot / can't* just before a phrase as negation. For symptoms that describe a failure ("cannot print from my phone"), the negative word must be inside the synonym, or the symptom is recorded as absent. Scenarios T78 and T84 caught this.
+
 ## Sources still needed for F01 to F28
 
 The original 28 faults came from general troubleshooting practice. Before submission, add one manufacturer source to each row, for example:
@@ -94,5 +106,9 @@ Technician name: ____________________  Role / workshop: ____________________  Da
 | R111 | faint labels | F48 darkness / dirty head | 0.75 | | |
 | R113 | blank pages after refilling ink tank | F49 air in tubes | 0.85 | | |
 | R116 | cover open (not receipt printer) | F50 | 0.80 | | |
+| R119 | cannot print from phone | F51 | 0.80 | | |
+| R121 | service call / SC code | F52 technician | 0.90 | | |
+| R122 | extra blank pages | F53 | 0.70 | | |
+| R124 | two-sided printing not working | F54 | 0.80 | | |
 
 Signature: ____________________

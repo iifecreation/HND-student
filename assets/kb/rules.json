@@ -119,5 +119,11 @@
 {"id":"R115","all":["streaks","refilled_tank"],"then":"F49","cf":0.80,"why":"Gaps and lines after refilling come from air bubbles in the ink path."},
 {"id":"R116","all":["cover_open"],"none":["type_thermal"],"then":"F50","cf":0.80,"why":"Office printers stop when a cover is not fully closed."},
 {"id":"R117","all":["out_of_paper"],"none":["type_thermal","type_label"],"then":"F01","cf":0.50,"why":"A no paper message with paper in the tray usually means it is loaded badly."},
-{"id":"R118","all":["cartridge_not_recognized","type_laser"],"then":"F10","cf":0.60,"why":"A cartridge error on a laser printer often means the toner is not seated in the drum."}
+{"id":"R118","all":["cartridge_not_recognized","type_laser"],"then":"F10","cf":0.60,"why":"A cartridge error on a laser printer often means the toner is not seated in the drum."},
+{"id":"R119","all":["phone_print_fail"],"then":"F51","cf":0.80,"why":"Phone printing fails mostly because of the network or the phone's print service."},
+{"id":"R120","all":["phone_print_fail","wireless_connection"],"then":"F51","cf":0.85,"why":"A wireless printer the phone cannot see is usually on a different network."},
+{"id":"R121","all":["service_call_msg"],"then":"F52","cf":0.90,"why":"A service call code means the machine found a fault that needs a technician."},
+{"id":"R122","all":["extra_blank_pages"],"then":"F53","cf":0.70,"why":"Extra blank pages usually come from the document or the paper size setting."},
+{"id":"R123","all":["extra_blank_pages","multi_feed"],"then":"F24","cf":0.75,"why":"Blank pages with several sheets feeding at once point to a worn separation pad."},
+{"id":"R124","all":["duplex_fail"],"then":"F54","cf":0.80,"why":"Two-sided printing stops when the back cover or duplex tray is not closed or the size is unsupported."}
 ]

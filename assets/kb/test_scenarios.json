@@ -75,5 +75,13 @@
 {"id":"T74","utterance":"the zebra prints over the gap between two labels","truth":["type_label","label_skip"],"expected":"F46"},
 {"id":"T75","utterance":"there is no paper jam but the photocopier says waste toner full","truth":["type_laser","waste_toner_msg"],"expected":"F45"},
 {"id":"T76","utterance":"the copies from my inkjet are faded","truth":["type_inkjet","faded_print"],"expected":"F06"},
-{"id":"T77","utterance":"my laser printer says out of paper but the tray is full","truth":["type_laser","out_of_paper","tray_overfilled"],"expected":"F01"}
+{"id":"T77","utterance":"my laser printer says out of paper but the tray is full","truth":["type_laser","out_of_paper","tray_overfilled"],"expected":"F01"},
+{"id":"T78","utterance":"i cannot print from my phone to the printer","truth":["phone_print_fail"],"expected":"F51"},
+{"id":"T79","utterance":"my android says no mopria printer found and the printer is on wifi","truth":["phone_print_fail","wireless_connection"],"expected":"F51"},
+{"id":"T80","utterance":"the ricoh photocopier shows a service call code","truth":["type_laser","service_call_msg"],"expected":"F52"},
+{"id":"T81","utterance":"the copier says call service sc five four two","truth":["service_call_msg"],"expected":"F52"},
+{"id":"T82","utterance":"my printer adds an extra blank page between pages","truth":["extra_blank_pages"],"expected":"F53"},
+{"id":"T83","utterance":"there is a blank page in between and it pulls several sheets at once","truth":["extra_blank_pages","multi_feed"],"expected":"F24"},
+{"id":"T84","utterance":"double sided printing is not working on my laser printer","truth":["type_laser","duplex_fail"],"expected":"F54"},
+{"id":"T85","utterance":"my hp officejet says printhead missing or failed","truth":["type_inkjet","printhead_error_msg"],"expected":"F39"}
 ]

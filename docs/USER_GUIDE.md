@@ -69,7 +69,7 @@ When the forward-chaining engine reaches a conclusion ($CF \ge 0.60$ or best can
 ### 2.3 Knowledge Base Browser
 
 Tap the **Knowledge Base** tab in the navigation drawer or bottom bar to explore the entire printer troubleshooting knowledge base:
-- **Search Bar:** Real-time search across all 50 faults, descriptions, and repair steps.
+- **Search Bar:** Real-time search across all 54 faults, descriptions, and repair steps.
 - **Category Filter:** Filter faults by *Paper, Quality, Connectivity, Hardware, or Safety*.
 - **Fault Detail View:** Tap any fault card to view its complete summary, recommended repair sequence, and the exact knowledge base rules that conclude it.
 
