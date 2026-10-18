@@ -20,7 +20,7 @@
 
 ## 2. Scope
 
-**In scope:** English; desktop laser and inkjet printers, dot matrix (impact) printers, thermal receipt (POS) printers, label/barcode printers, large-format plotters and compact photo printers, mostly brand-agnostic; 62 faults; Android only; voice plus text fallback; local history log; evaluation harness.
+**In scope:** English; desktop laser and inkjet printers, dot matrix (impact) printers, thermal receipt (POS) printers, label/barcode printers, large-format plotters and compact photo printers, mostly brand-agnostic; 64 faults; Android only; voice plus text fallback; local history log; evaluation harness.
 
 **Out of scope (do not build):** cloud APIs of any kind, internet access, machine-learning model training, iOS, full brand-specific error-code libraries (a few very common codes such as Canon 5B00 and B200 are included as synonyms), user accounts, ads, analytics.
 
@@ -226,7 +226,7 @@ Rules for this test: the 20 provided scenarios must stay unchanged. **Never edit
 
 ## 13. Knowledge acquisition and validation (for the report)
 
-The supplied knowledge base was compiled from general printer troubleshooting practice for laser and inkjet printers; faults F29 to F62 were added from manufacturer documentation listed in `docs/KB_SOURCES.md`. **It must be validated before submission:** (1) cross-check each fault against manufacturer support pages and manuals (HP, Canon, Epson, Brother) and cite them; (2) have a qualified printer technician review the rules and adjust CF values; (3) record the review in the report as the knowledge-validation step. The app must make adding or editing rules easy: change JSON, no Dart changes.
+The supplied knowledge base was compiled from general printer troubleshooting practice for laser and inkjet printers; faults F29 to F64 were added from manufacturer documentation listed in `docs/KB_SOURCES.md`. **It must be validated before submission:** (1) cross-check each fault against manufacturer support pages and manuals (HP, Canon, Epson, Brother) and cite them; (2) have a qualified printer technician review the rules and adjust CF values; (3) record the review in the report as the knowledge-validation step. The app must make adding or editing rules easy: change JSON, no Dart changes.
 
 ## 14. Risks and fallbacks
 

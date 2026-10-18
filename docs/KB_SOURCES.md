@@ -1,6 +1,6 @@
 # Knowledge base sources
 
-Current size: 86 symptoms, 62 faults, 143 rules, 102 test scenarios, across seven printer types (laser, inkjet, dot matrix, thermal receipt, label, large-format plotter, compact photo).
+Current size: 90 symptoms, 64 faults, 152 rules, 109 test scenarios, across seven printer types (laser, inkjet, dot matrix, thermal receipt, label, large-format plotter, compact photo).
 
 This file records where the knowledge in `assets/kb/` came from. It is the evidence for the knowledge acquisition chapter of the dissertation.
 
@@ -94,6 +94,21 @@ Main source: Brother HL-B2080DW Online User's Guide, *Improve the Print Quality*
 
 **Design change in batch 5 (viva point):** with seven printer types, the question selector used to ask "is it X?" for one type after another and ran out of its 6-question budget before reaching real symptoms. Original scenario T02 started failing because of this. The selector now forces only one early type question and allows at most two type questions per session (`QuestionSelector.maxTypeQuestions`). A user can still name the type in their own words at any time.
 
+## Sources for batch 6 (F63, F64 and new message wording)
+
+| Item | Brand / type | Main source | What it supports |
+|---|---|---|---|
+| F63 Ink level detection stopped | Canon inkjet | Canon support, *A Support Code and A Message Are Displayed*: https://support.usa.canon.com/kb/articles/en_US/Knowledge/ART143345 (and regional copies such as https://sg.canon/en/support/8201730300) | Code 1686: ink level cannot be detected; 1688: ink has run out; holding Stop for at least 5 seconds continues printing with level detection disabled; Canon is not liable for printing in the ink-out state. |
+| R144–R145 → F23 | HP laser | HP support document on PCL XL errors: https://support.hp.com/sg-en/document/c02008692 | PCL XL errors come from the driver or print language; change driver settings, use the model-specific or PostScript driver. |
+| cartridge_not_recognized wording | HP inkjet | HP support, dynamic security and "Cartridge Problem" / "cartridges appear to be damaged": https://support.hp.com/nz-en/document/c05308850 | Non-HP chips can be rejected; HP released firmware that disables dynamic security on affected models (existing F17 steps). |
+| F64 Colour registration | Colour laser (Brother) | Brother FAQ *Correct Color Print Alignment (Color Registration)*: https://support.brother.com/g/b/faqend.aspx?c=us&lang=en&prod=hll3270cdw_us_eu_as&faqid=faq00000023_500 | Use registration when colour areas have cyan, magenta or yellow fringes; Toner > Registration; colour calibration is a separate step. |
+| R150–R152 beeping | Dot matrix (Epson) | Epson LX-350 *Problems and Solutions* (link above) | "Beeper sounds five times and all lights blink": error; switch off and on; check for paper or ribbon jam. |
+| wifi_drop, job_stuck wording | Any | Existing faults F14 and F15 | "won't connect to Wi-Fi", "WPS failed", "spooler not running". |
+
+**Quality checks added in batch 6 (viva point):**
+- `KbValidator` now reports an error if the same synonym belongs to two symptoms. It found "refilled" in both *third-party cartridge* and *ink tanks recently refilled*.
+- New test `test/extraction_precision_test.dart`: no scenario sentence may produce a symptom outside its truth list. It caught "printer beeps" fuzzy-matching "printer keeps" and "very old" (old printer) inside "ribbon is very old".
+
 ## Live app test on an Android emulator (17 October 2026)
 
 The debug app was installed on a Pixel 4 emulator (Android 16, 2 GB RAM) and driven by typed input:
@@ -154,5 +169,9 @@ Technician name: ____________________  Role / workshop: ____________________  Da
 | R139 | Bluetooth will not pair | F61 | 0.80 | | |
 | R142 | print starts in wrong place (dot matrix) | F62 | 0.85 | | |
 | R118 | cartridge not detected (laser) | F10 not seated | 0.75 | | |
+| R144 | PCL XL / PostScript error page | F23 driver language | 0.85 | | |
+| R146 | ink has run out / 1688 / 1686 | F63 | 0.80 | | |
+| R148 | colours misaligned | F64 registration | 0.80 | | |
+| R151 | beeping dot matrix | F28 restart / jam check | 0.65 | | |
 
 Signature: ____________________
