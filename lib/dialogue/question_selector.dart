@@ -16,6 +16,12 @@ class _SymptomScore {
 
 /// Information-maximizing question selector implementing SPEC section 9 rules.
 class QuestionSelector {
+  /// Symptom category used in symptoms.json for "what kind of printer" facts.
+  static const String printerTypeCategory = 'printer_type';
+
+  /// Most printer-type questions asked in one session (see step 3).
+  static const int maxTypeQuestions = 2;
+
   final KnowledgeBase kb;
 
   const QuestionSelector(this.kb);
@@ -23,7 +29,7 @@ class QuestionSelector {
   /// Selects the most informative next symptom to question.
   ///
   /// Heuristic criteria per SPEC section 9:
-  /// 1. Prioritizes printer type (laser vs inkjet) early if any candidate rule needs it.
+  /// 1. Prioritizes printer type (laser, inkjet, dot matrix, thermal...) early if any candidate rule needs it.
   /// 2. Considers symptoms still UNKNOWN that appear in rules of the top 5 candidate faults
   ///    (including both active concluded faults and partially-active candidate faults).
   /// 3. Chooses the symptom appearing in the most such rules.
@@ -98,20 +104,44 @@ class QuestionSelector {
       return true;
     }).toList(growable: false);
 
-    // 3. Early printer type check: if any candidate rule needs laser or inkjet, ask early
-    final needsPrinterType = candidateRules.any((r) =>
-        r.all.contains('type_laser') ||
-        r.all.contains('type_inkjet') ||
-        r.any.contains('type_laser') ||
-        r.any.contains('type_inkjet'));
+    // 3. Early printer type check. Printer types are the symptoms whose
+    // category is "printer_type" in symptoms.json, so new types can be added
+    // in JSON without touching this code. If no type is known yet and the
+    // candidate rules depend on one, ask about the type those rules mention
+    // most often (e.g. "Is it a thermal receipt printer?").
+    final typeIds = kb.symptomList
+        .where((s) => s.category == printerTypeCategory)
+        .map((s) => s.id)
+        .toSet();
+    final typeKnown = typeIds.any((id) => workingMemory.isTrue(id));
+    // How many printer-type questions have already been answered (yes or no).
+    final typesAnswered =
+        typeIds.where((id) => !workingMemory.isUnknown(id)).length;
+    // With many printer types, asking "is it X?" for each one in turn would
+    // use up the question budget before any real symptom is asked. So we
+    // force at most one early type question, and allow at most
+    // [maxTypeQuestions] type questions in total. The user can still name
+    // the type in their own words at any time ("no, it's an inkjet").
+    final mayAskType = !typeKnown && typesAnswered < maxTypeQuestions;
 
-    if (needsPrinterType) {
-      if (workingMemory.isUnknown('type_laser') &&
-          workingMemory.isUnknown('type_inkjet')) {
-        final laserSymptom = kb.getSymptom('type_laser');
-        if (laserSymptom != null) {
-          return laserSymptom;
+    if (!typeKnown && typesAnswered == 0) {
+      final typeUsage = <String, int>{};
+      for (final r in candidateRules) {
+        for (final id in [...r.all, ...r.any]) {
+          if (typeIds.contains(id) && workingMemory.isUnknown(id)) {
+            typeUsage[id] = (typeUsage[id] ?? 0) + 1;
+          }
         }
+      }
+      if (typeUsage.isNotEmpty) {
+        // Most-used type first; ties broken by id so results are repeatable.
+        final best = typeUsage.keys.toList()
+          ..sort((a, b) {
+            final c = typeUsage[b]!.compareTo(typeUsage[a]!);
+            return c != 0 ? c : a.compareTo(b);
+          });
+        final typeSymptom = kb.getSymptom(best.first);
+        if (typeSymptom != null) return typeSymptom;
       }
     }
 
@@ -122,6 +152,7 @@ class QuestionSelector {
       final symptomsInRule = <String>{...rule.all, ...rule.any, ...rule.none};
       for (final symptomId in symptomsInRule) {
         if (!workingMemory.isUnknown(symptomId)) continue;
+        if (typeIds.contains(symptomId) && !mayAskType) continue;
 
         final score = symptomScores.putIfAbsent(
           symptomId,
@@ -139,6 +170,7 @@ class QuestionSelector {
         final symptomsInRule = <String>{...rule.all, ...rule.any, ...rule.none};
         for (final symptomId in symptomsInRule) {
           if (!workingMemory.isUnknown(symptomId)) continue;
+          if (typeIds.contains(symptomId) && !mayAskType) continue;
 
           final score = symptomScores.putIfAbsent(
             symptomId,

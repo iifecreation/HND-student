@@ -44,8 +44,33 @@ void main() {
         candidates: candidates,
       );
 
-      expect(nextQuestion?.id, equals('type_laser'),
+      // Any printer-type question is correct here; with four printer types
+      // the selector asks about the type most candidate rules depend on.
+      expect(nextQuestion?.category, equals(QuestionSelector.printerTypeCategory),
           reason: 'Printer type must be asked early when candidates differ by printer type');
+    });
+
+    test('stops asking printer-type questions after maxTypeQuestions answers',
+        () {
+      final selector = QuestionSelector(kb);
+      final wm = WorkingMemory.fromKnowledgeBase(kb);
+      wm.setTrue('paper_jam');
+
+      // The user has already said "no" to two printer types.
+      expect(QuestionSelector.maxTypeQuestions, equals(2));
+      wm.setFalse('type_dotmatrix');
+      wm.setFalse('type_plotter');
+
+      // From now on no question may be about printer type, so real symptom
+      // questions are not crowded out (this broke scenario T02 before).
+      for (var i = 0; i < 4; i++) {
+        final q = selector.selectNextQuestion(
+            workingMemory: wm, candidates: const []);
+        if (q == null) break;
+        expect(q.category, isNot(QuestionSelector.printerTypeCategory),
+            reason: 'Asked ${q.id} after the printer-type limit');
+        wm.setFalse(q.id);
+      }
     });
 
     test('picks symptom with highest rule coverage among candidate rules', () {

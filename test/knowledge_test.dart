@@ -1,6 +1,7 @@
 // Unit tests for the knowledge base layer: models, loader, and validator.
 
 import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:printer_doc/knowledge/fault.dart';
 import 'package:printer_doc/knowledge/kb_loader.dart';
@@ -114,6 +115,37 @@ void main() {
       expect(result.isValid, isFalse);
       expect(
         result.errors.any((e) => e.message.contains('Duplicate symptom ID')),
+        isTrue,
+      );
+    });
+
+    test('flags a synonym shared by two different symptoms', () {
+      final result = validator.validate(
+        symptoms: const [
+          Symptom(
+            id: 'third_party_cartridge',
+            label: 'A',
+            category: 'context',
+            synonyms: ['refilled'],
+            question: 'QA',
+          ),
+          Symptom(
+            id: 'refilled_tank',
+            label: 'B',
+            category: 'context',
+            synonyms: ['Refilled', 'refilled the tank'],
+            question: 'QB',
+          ),
+        ],
+        faults: const [],
+        rules: const [],
+      );
+
+      expect(result.isValid, isFalse);
+      expect(
+        result.errors.any(
+          (e) => e.message.contains('"Refilled" is used by both'),
+        ),
         isTrue,
       );
     });
@@ -251,8 +283,20 @@ void main() {
         ),
       ];
       final rules = [
-        const Rule(id: 'R01', all: ['s1'], then: 'F01', cf: 1.5, why: 'too high'),
-        const Rule(id: 'R02', all: ['s1'], then: 'F01', cf: -0.1, why: 'too low'),
+        const Rule(
+          id: 'R01',
+          all: ['s1'],
+          then: 'F01',
+          cf: 1.5,
+          why: 'too high',
+        ),
+        const Rule(
+          id: 'R02',
+          all: ['s1'],
+          then: 'F01',
+          cf: -0.1,
+          why: 'too low',
+        ),
       ];
 
       final result = validator.validate(
@@ -263,7 +307,9 @@ void main() {
 
       expect(result.isValid, isFalse);
       expect(
-        result.errors.where((e) => e.message.contains('Certainty factor')).length,
+        result.errors
+            .where((e) => e.message.contains('Certainty factor'))
+            .length,
         2,
       );
     });
@@ -314,7 +360,9 @@ void main() {
 
       expect(result.isValid, isFalse);
       expect(
-        result.errors.any((e) => e.message.contains('unknown symptom ID in all')),
+        result.errors.any(
+          (e) => e.message.contains('unknown symptom ID in all'),
+        ),
         isTrue,
       );
       expect(
@@ -325,45 +373,52 @@ void main() {
   });
 
   group('Real Knowledge Base Assets Validation', () {
-    test('loads real assets/kb/ files and asserts validator reports zero errors', () {
-      final symptomsFile = File('assets/kb/symptoms.json');
-      final faultsFile = File('assets/kb/faults.json');
-      final rulesFile = File('assets/kb/rules.json');
+    test(
+      'loads real assets/kb/ files and asserts validator reports zero errors',
+      () {
+        final symptomsFile = File('assets/kb/symptoms.json');
+        final faultsFile = File('assets/kb/faults.json');
+        final rulesFile = File('assets/kb/rules.json');
 
-      expect(symptomsFile.existsSync(), isTrue, reason: 'symptoms.json exists');
-      expect(faultsFile.existsSync(), isTrue, reason: 'faults.json exists');
-      expect(rulesFile.existsSync(), isTrue, reason: 'rules.json exists');
+        expect(
+          symptomsFile.existsSync(),
+          isTrue,
+          reason: 'symptoms.json exists',
+        );
+        expect(faultsFile.existsSync(), isTrue, reason: 'faults.json exists');
+        expect(rulesFile.existsSync(), isTrue, reason: 'rules.json exists');
 
-      final symptomsJson = symptomsFile.readAsStringSync();
-      final faultsJson = faultsFile.readAsStringSync();
-      final rulesJson = rulesFile.readAsStringSync();
+        final symptomsJson = symptomsFile.readAsStringSync();
+        final faultsJson = faultsFile.readAsStringSync();
+        final rulesJson = rulesFile.readAsStringSync();
 
-      const loader = KbLoader();
-      final kb = loader.load(
-        symptomsJson: symptomsJson,
-        faultsJson: faultsJson,
-        rulesJson: rulesJson,
-      );
+        const loader = KbLoader();
+        final kb = loader.load(
+          symptomsJson: symptomsJson,
+          faultsJson: faultsJson,
+          rulesJson: rulesJson,
+        );
 
-      // Verify asset quantities as documented in SPEC
-      expect(kb.symptoms.length, equals(46), reason: '46 symptoms expected');
-      expect(kb.faults.length, equals(28), reason: '28 faults expected');
-      expect(kb.rules.length, equals(72), reason: '72 rules expected');
+        // Verify asset quantities as documented in SPEC
+        expect(kb.symptoms.length, equals(90), reason: '90 symptoms expected');
+        expect(kb.faults.length, equals(64), reason: '64 faults expected');
+        expect(kb.rules.length, equals(152), reason: '152 rules expected');
 
-      // Validate the real knowledge base
-      const validator = KbValidator();
-      final result = validator.validateKnowledgeBase(kb);
+        // Validate the real knowledge base
+        const validator = KbValidator();
+        final result = validator.validateKnowledgeBase(kb);
 
-      if (!result.isValid) {
-        // Print errors to facilitate debugging if any
-        for (final error in result.errors) {
-          // ignore: avoid_print
-          print('Validation Error: $error');
+        if (!result.isValid) {
+          // Print errors to facilitate debugging if any
+          for (final error in result.errors) {
+            // ignore: avoid_print
+            print('Validation Error: $error');
+          }
         }
-      }
 
-      expect(result.isValid, isTrue, reason: 'Validator reports zero errors');
-      expect(result.errors, isEmpty);
-    });
+        expect(result.isValid, isTrue, reason: 'Validator reports zero errors');
+        expect(result.errors, isEmpty);
+      },
+    );
   });
 }

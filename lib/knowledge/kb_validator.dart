@@ -118,6 +118,25 @@ class KbValidator {
       }
     }
 
+    // 4b. The same synonym must not belong to two different symptoms, or the
+    // extractor cannot tell which symptom the user meant.
+    final synonymOwner = <String, String>{};
+    for (final symptom in symptoms) {
+      for (final synonym in symptom.synonyms) {
+        final key = synonym.trim().toLowerCase();
+        final owner = synonymOwner[key];
+        if (owner == null) {
+          synonymOwner[key] = symptom.id;
+        } else if (owner != symptom.id) {
+          issues.add(KbValidationIssue(
+            entityId: symptom.id,
+            message:
+                'Synonym "$synonym" is used by both $owner and ${symptom.id}',
+          ));
+        }
+      }
+    }
+
     // 5. Validate rules
     for (final rule in rules) {
       // Check empty conditions
