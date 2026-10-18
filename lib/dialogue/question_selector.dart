@@ -19,6 +19,9 @@ class QuestionSelector {
   /// Symptom category used in symptoms.json for "what kind of printer" facts.
   static const String printerTypeCategory = 'printer_type';
 
+  /// Most printer-type questions asked in one session (see step 3).
+  static const int maxTypeQuestions = 2;
+
   final KnowledgeBase kb;
 
   const QuestionSelector(this.kb);
@@ -111,8 +114,17 @@ class QuestionSelector {
         .map((s) => s.id)
         .toSet();
     final typeKnown = typeIds.any((id) => workingMemory.isTrue(id));
+    // How many printer-type questions have already been answered (yes or no).
+    final typesAnswered =
+        typeIds.where((id) => !workingMemory.isUnknown(id)).length;
+    // With many printer types, asking "is it X?" for each one in turn would
+    // use up the question budget before any real symptom is asked. So we
+    // force at most one early type question, and allow at most
+    // [maxTypeQuestions] type questions in total. The user can still name
+    // the type in their own words at any time ("no, it's an inkjet").
+    final mayAskType = !typeKnown && typesAnswered < maxTypeQuestions;
 
-    if (!typeKnown) {
+    if (!typeKnown && typesAnswered == 0) {
       final typeUsage = <String, int>{};
       for (final r in candidateRules) {
         for (final id in [...r.all, ...r.any]) {
@@ -140,6 +152,7 @@ class QuestionSelector {
       final symptomsInRule = <String>{...rule.all, ...rule.any, ...rule.none};
       for (final symptomId in symptomsInRule) {
         if (!workingMemory.isUnknown(symptomId)) continue;
+        if (typeIds.contains(symptomId) && !mayAskType) continue;
 
         final score = symptomScores.putIfAbsent(
           symptomId,
@@ -157,6 +170,7 @@ class QuestionSelector {
         final symptomsInRule = <String>{...rule.all, ...rule.any, ...rule.none};
         for (final symptomId in symptomsInRule) {
           if (!workingMemory.isUnknown(symptomId)) continue;
+          if (typeIds.contains(symptomId) && !mayAskType) continue;
 
           final score = symptomScores.putIfAbsent(
             symptomId,

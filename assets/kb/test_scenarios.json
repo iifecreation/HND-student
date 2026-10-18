@@ -91,5 +91,14 @@
 {"id":"T90","utterance":"when i print envelopes on my laser printer the toner rubs off","truth":["type_laser","toner_rubs_off","envelopes_used"],"expected":"F57"},
 {"id":"T91","utterance":"the envelopes come out wrinkled","truth":["type_laser","wrinkled_paper","envelopes_used"],"expected":"F57"},
 {"id":"T92","utterance":"the printer keeps asking for manual feed even though the tray is full","truth":["manual_feed_msg"],"expected":"F58"},
-{"id":"T93","utterance":"my laser printer print is faded because toner save is on","truth":["type_laser","faded_print","draft_mode"],"expected":"F22"}
+{"id":"T93","utterance":"my laser printer print is faded because toner save is on","truth":["type_laser","faded_print","draft_mode"],"expected":"F22"},
+{"id":"T94","utterance":"my designjet says paper loaded with too much skew","truth":["type_plotter","roll_skew_msg"],"expected":"F59"},
+{"id":"T95","utterance":"the plotter output comes out crooked","truth":["type_plotter","paper_skew"],"expected":"F59"},
+{"id":"T96","utterance":"my selphy says paper and ink cassette sizes are incorrect","truth":["type_photo","cassette_mismatch_msg"],"expected":"F60"},
+{"id":"T97","utterance":"the photo printer prints blank photos","truth":["type_photo","blank_pages"],"expected":"F60"},
+{"id":"T98","utterance":"my bluetooth receipt printer will not pair with the tablet","truth":["type_thermal","bluetooth_pair_fail"],"expected":"F61"},
+{"id":"T99","utterance":"after the phone update the bluetooth printer stopped connecting","truth":["bluetooth_pair_fail","recent_update"],"expected":"F61"},
+{"id":"T100","utterance":"on my dot matrix the printing starts too high on the page","truth":["type_dotmatrix","print_position"],"expected":"F62"},
+{"id":"T101","utterance":"my pantum printer says close output bin","truth":["type_laser","cover_open"],"expected":"F50"},
+{"id":"T102","utterance":"the lexmark says no toner cartridge detected","truth":["type_laser","cartridge_not_recognized"],"expected":"F10"}
 ]

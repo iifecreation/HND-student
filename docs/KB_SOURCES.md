@@ -1,6 +1,6 @@
 # Knowledge base sources
 
-Current size: 80 symptoms, 58 faults, 134 rules, 93 test scenarios, across five printer types (laser, inkjet, dot matrix, thermal receipt, label).
+Current size: 86 symptoms, 62 faults, 143 rules, 102 test scenarios, across seven printer types (laser, inkjet, dot matrix, thermal receipt, label, large-format plotter, compact photo).
 
 This file records where the knowledge in `assets/kb/` came from. It is the evidence for the knowledge acquisition chapter of the dissertation.
 
@@ -82,6 +82,18 @@ Main source: Brother HL-B2080DW Online User's Guide, *Improve the Print Quality*
 | F58 Print job set to manual feed | Brother *Error and Maintenance Messages*, *Manual Feed*: manual selected as the paper source in the driver. |
 | draft_mode synonyms | *Faint*: Toner Save may be on. |
 
+## Sources for faults F59 to F62 (batch 5)
+
+| Fault | Printer type | Main source | What it supports |
+|---|---|---|---|
+| F59 Roll paper skewed | Large format (HP DesignJet) | HP, *Designjet T-Series and Z-Series - Paper Skewing or Misaligned Paper*: https://support.hp.com/us-en/document/c03673219 | Space around the printer, bent spindle or broken hubs, roll loose on its core, roll against the stoppers, straight leading edge, follow the front-panel alignment instructions. |
+| F60 Photo cassette mismatch | Compact photo (Canon SELPHY) | Canon Community, Canon staff reply on SELPHY CP1500 "paper and ink cassette sizes are incorrect": https://community.usa.canon.com/t5/Mobile-Compact-Printers/SELPHY-CP1500-Paper-and-ink-cassette-sizes-are-incorrect/m-p/521252 | Paper types L, Postcard and Card; select the loaded paper type in the SELPHY app; reseat the cassettes. **Forum source with Canon staff; get the technician to confirm.** |
+| F61 Bluetooth not paired | Portable / receipt | Epson *TM Bluetooth Connector* overview (an OS update deletes pairing information); Lightspeed POS guide for TM-m10/TM-m30 (forget device, power-cycle, re-pair, app Bluetooth permission) | |
+| F62 Page length / top of form | Dot matrix | Epson LX-350 User's Guide *Problems and Solutions* (link above): *Printing position problems* and *Regular gaps occur in the printout* | Margin/top-of-form in the application, tractor page length, skip over perforation. |
+| Brand names | Laser | Pantum M6200 manual (*No Laser Toner Cartridge Detected*, *Close Output Bin*); Lexmark, Xerox, Ricoh, Kyocera, Konica, Samsung Xpress added as laser synonyms | R118 raised from 0.60 to 0.75 because Brother and Pantum both name "not installed correctly" as the cause of a cartridge-not-detected message. |
+
+**Design change in batch 5 (viva point):** with seven printer types, the question selector used to ask "is it X?" for one type after another and ran out of its 6-question budget before reaching real symptoms. Original scenario T02 started failing because of this. The selector now forces only one early type question and allows at most two type questions per session (`QuestionSelector.maxTypeQuestions`). A user can still name the type in their own words at any time.
+
 ## Live app test on an Android emulator (17 October 2026)
 
 The debug app was installed on a Pixel 4 emulator (Android 16, 2 GB RAM) and driven by typed input:
@@ -137,5 +149,10 @@ Technician name: ____________________  Role / workshop: ____________________  Da
 | R130 | toner on back of page | F56 transfer roller / fuser | 0.75 | | |
 | R131 | toner rubs off envelopes / card | F57 settings | 0.85 | | |
 | R134 | manual feed message | F58 | 0.85 | | |
+| R135 | roll misaligned / too much skew | F59 | 0.85 | | |
+| R137 | photo cassette size error | F60 | 0.85 | | |
+| R139 | Bluetooth will not pair | F61 | 0.80 | | |
+| R142 | print starts in wrong place (dot matrix) | F62 | 0.85 | | |
+| R118 | cartridge not detected (laser) | F10 not seated | 0.75 | | |
 
 Signature: ____________________

@@ -119,7 +119,7 @@
 {"id":"R115","all":["streaks","refilled_tank"],"then":"F49","cf":0.80,"why":"Gaps and lines after refilling come from air bubbles in the ink path."},
 {"id":"R116","all":["cover_open"],"none":["type_thermal"],"then":"F50","cf":0.80,"why":"Office printers stop when a cover is not fully closed."},
 {"id":"R117","all":["out_of_paper"],"none":["type_thermal","type_label"],"then":"F01","cf":0.50,"why":"A no paper message with paper in the tray usually means it is loaded badly."},
-{"id":"R118","all":["cartridge_not_recognized","type_laser"],"then":"F10","cf":0.60,"why":"A cartridge error on a laser printer often means the toner is not seated in the drum."},
+{"id":"R118","all":["cartridge_not_recognized","type_laser"],"then":"F10","cf":0.75,"why":"Brother and Pantum manuals both say a laser cartridge error or no cartridge detected usually means the cartridge is not seated correctly."},
 {"id":"R119","all":["phone_print_fail"],"then":"F51","cf":0.80,"why":"Phone printing fails mostly because of the network or the phone's print service."},
 {"id":"R120","all":["phone_print_fail","wireless_connection"],"then":"F51","cf":0.85,"why":"A wireless printer the phone cannot see is usually on a different network."},
 {"id":"R121","all":["service_call_msg"],"then":"F52","cf":0.90,"why":"A service call code means the machine found a fault that needs a technician."},
@@ -135,5 +135,14 @@
 {"id":"R131","all":["toner_rubs_off","envelopes_used"],"then":"F57","cf":0.85,"why":"Toner rubbing off envelopes or card usually means the media type or levers are wrong."},
 {"id":"R132","all":["wrinkled_paper","envelopes_used"],"then":"F57","cf":0.80,"why":"Creased envelopes mean the envelope levers or feed path are not set for envelopes."},
 {"id":"R133","all":["paper_jam","envelopes_used"],"then":"F57","cf":0.65,"why":"Envelopes and thick paper jam when fed from the main tray instead of the manual slot."},
-{"id":"R134","all":["manual_feed_msg"],"then":"F58","cf":0.85,"why":"A manual feed request means the print job chose the manual slot as its paper source."}
+{"id":"R134","all":["manual_feed_msg"],"then":"F58","cf":0.85,"why":"A manual feed request means the print job chose the manual slot as its paper source."},
+{"id":"R135","all":["roll_skew_msg"],"then":"F59","cf":0.85,"why":"A misaligned or too much skew message means the roll is not loaded straight."},
+{"id":"R136","all":["paper_skew","type_plotter"],"then":"F59","cf":0.80,"why":"Crooked output on a large-format printer usually comes from how the roll sits on the spindle."},
+{"id":"R137","all":["cassette_mismatch_msg"],"then":"F60","cf":0.85,"why":"Cassette errors on photo printers mean the ink and paper cassettes do not match or are not seated."},
+{"id":"R138","all":["blank_pages","type_photo"],"then":"F60","cf":0.60,"why":"A blank photo print usually means the ink sheet is used up or the wrong size."},
+{"id":"R139","all":["bluetooth_pair_fail"],"then":"F61","cf":0.80,"why":"Bluetooth printing problems usually mean the pairing was lost or the app has no Bluetooth access."},
+{"id":"R140","all":["bluetooth_pair_fail","recent_update"],"then":"F61","cf":0.90,"why":"A phone software update deletes stored Bluetooth pairings."},
+{"id":"R141","all":["print_position"],"then":"F62","cf":0.70,"why":"Print in the wrong place on the page points to page length or top-of-form settings."},
+{"id":"R142","all":["print_position","type_dotmatrix"],"then":"F62","cf":0.85,"why":"On a dot matrix with continuous paper, the tractor page length setting must match the paper."},
+{"id":"R143","all":["paper_jam","type_plotter"],"then":"F59","cf":0.55,"why":"Large-format jams usually start with a roll that is skewed or loose."}
 ]
